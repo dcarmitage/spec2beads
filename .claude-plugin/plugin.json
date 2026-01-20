@@ -2,5 +2,13 @@
   "name": "spec-to-beads",
   "version": "1.0.0",
   "description": "Transform vague product specs into well-structured agile beads for AI agent and human collaboration using beads_rust (br)",
+  "author": {
+    "name": "dcarmitage",
+    "url": "https://github.com/dcarmitage"
+  },
+  "homepage": "https://github.com/dcarmitage/spec2beads",
+  "repository": "https://github.com/dcarmitage/spec2beads",
+  "license": "MIT",
+  "keywords": ["spec-to-beads", "agile", "ai-agents", "product-specs", "beads", "issue-tracking"],
   "skills": ["skills/spec-to-beads"]
 }

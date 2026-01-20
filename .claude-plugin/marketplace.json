@@ -1,0 +1,21 @@
+{
+  "name": "spec-to-beads-marketplace",
+  "owner": {
+    "name": "dcarmitage",
+    "url": "https://github.com/dcarmitage"
+  },
+  "plugins": [
+    {
+      "name": "spec-to-beads",
+      "source": "./",
+      "description": "Transform vague product specs into well-structured agile beads for AI agent and human collaboration",
+      "version": "1.0.0",
+      "author": {
+        "name": "dcarmitage"
+      },
+      "repository": "https://github.com/dcarmitage/spec2beads",
+      "license": "MIT",
+      "keywords": ["spec-to-beads", "agile", "ai-agents", "product-specs", "beads", "issue-tracking"]
+    }
+  ]
+}

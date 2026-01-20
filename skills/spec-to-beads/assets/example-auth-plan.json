@@ -1,0 +1,130 @@
+{
+  "epic": {
+    "title": "User Authentication System",
+    "description": "Implement secure user authentication with email/password and OAuth support",
+    "priority": 1
+  },
+  "beads": [
+    {
+      "id": "auth-spike",
+      "title": "Spike: Auth architecture decision",
+      "type": "spike",
+      "priority": 1,
+      "description": "Evaluate and decide on authentication architecture: JWT vs sessions, token refresh strategy, OAuth providers to support, password requirements",
+      "acceptance": "ADR document created with chosen approach, security review completed",
+      "labels": ["backend", "architecture", "security", "needs-decision"],
+      "depends_on": [],
+      "assignee": "human"
+    },
+    {
+      "id": "users-migration",
+      "title": "Create users table migration",
+      "type": "task",
+      "priority": 1,
+      "description": "Create database migration for users table with id, email, password_hash, email_verified, created_at, updated_at",
+      "acceptance": "Migration runs successfully, rollback works, indexes on email",
+      "labels": ["backend", "database"],
+      "depends_on": ["auth-spike"]
+    },
+    {
+      "id": "password-hashing",
+      "title": "Implement password hashing service",
+      "type": "task",
+      "priority": 1,
+      "description": "Create service for password hashing using bcrypt with configurable cost factor",
+      "acceptance": "Passwords hashed with bcrypt cost 12+, timing-safe comparison, no plaintext storage",
+      "labels": ["backend", "security"],
+      "depends_on": ["auth-spike"]
+    },
+    {
+      "id": "register-endpoint",
+      "title": "Implement registration endpoint",
+      "type": "task",
+      "priority": 1,
+      "description": "POST /auth/register - validate input, check email uniqueness, hash password, create user, return JWT",
+      "acceptance": "- Email format validation\n- Password strength validation (8+ chars, mixed case, number)\n- 409 on duplicate email\n- Returns JWT on success\n- Rate limited to 5/min per IP",
+      "labels": ["backend", "api"],
+      "depends_on": ["users-migration", "password-hashing"]
+    },
+    {
+      "id": "login-endpoint",
+      "title": "Implement login endpoint",
+      "type": "task",
+      "priority": 1,
+      "description": "POST /auth/login - validate credentials, return JWT",
+      "acceptance": "- Timing-safe password comparison\n- 401 on invalid credentials (generic message)\n- Returns JWT on success\n- Rate limited to 10/min per IP",
+      "labels": ["backend", "api"],
+      "depends_on": ["users-migration", "password-hashing"]
+    },
+    {
+      "id": "jwt-service",
+      "title": "Implement JWT service",
+      "type": "task",
+      "priority": 1,
+      "description": "Service for JWT generation, validation, and refresh token rotation",
+      "acceptance": "- Access token: 15min expiry\n- Refresh token: 7 day expiry\n- Refresh rotation implemented\n- Token revocation supported",
+      "labels": ["backend", "security"],
+      "depends_on": ["auth-spike"]
+    },
+    {
+      "id": "auth-middleware",
+      "title": "Create auth middleware",
+      "type": "task",
+      "priority": 1,
+      "description": "Middleware to validate JWT and attach user to request context",
+      "acceptance": "- Validates JWT signature\n- Checks expiry\n- Attaches user_id to request\n- 401 on invalid/expired token",
+      "labels": ["backend", "api"],
+      "depends_on": ["jwt-service"]
+    },
+    {
+      "id": "email-verification",
+      "title": "Add email verification flow",
+      "type": "task",
+      "priority": 2,
+      "description": "Send verification email on registration, verify endpoint, resend endpoint",
+      "acceptance": "- Verification token: 24h expiry\n- POST /auth/verify-email\n- POST /auth/resend-verification\n- Rate limited",
+      "labels": ["backend", "email"],
+      "depends_on": ["register-endpoint"]
+    },
+    {
+      "id": "password-reset",
+      "title": "Implement password reset flow",
+      "type": "task",
+      "priority": 2,
+      "description": "Forgot password and reset password endpoints with secure token flow",
+      "acceptance": "- POST /auth/forgot-password\n- POST /auth/reset-password\n- Token: 1h expiry, single use\n- Rate limited",
+      "labels": ["backend", "email", "security"],
+      "depends_on": ["users-migration"]
+    },
+    {
+      "id": "login-ui",
+      "title": "Build login form UI",
+      "type": "task",
+      "priority": 1,
+      "description": "Login form component with email/password fields, validation, error handling",
+      "acceptance": "- Client-side validation\n- Loading state\n- Error display\n- Redirect on success\n- Link to registration\n- Link to forgot password",
+      "labels": ["frontend"],
+      "depends_on": ["login-endpoint"]
+    },
+    {
+      "id": "register-ui",
+      "title": "Build registration form UI",
+      "type": "task",
+      "priority": 1,
+      "description": "Registration form with email, password, confirm password fields",
+      "acceptance": "- Client-side validation\n- Password strength indicator\n- Confirm password match\n- Terms checkbox\n- Loading state\n- Success message",
+      "labels": ["frontend"],
+      "depends_on": ["register-endpoint"]
+    },
+    {
+      "id": "auth-tests",
+      "title": "Write auth integration tests",
+      "type": "task",
+      "priority": 2,
+      "description": "Integration tests for all auth endpoints",
+      "acceptance": "- Happy path tests\n- Error case tests\n- Rate limit tests\n- Token expiry tests\n- >80% coverage",
+      "labels": ["backend", "testing"],
+      "depends_on": ["register-endpoint", "login-endpoint", "auth-middleware"]
+    }
+  ]
+}

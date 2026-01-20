@@ -1,0 +1,6 @@
+{
+  "name": "spec-to-beads",
+  "version": "1.0.0",
+  "description": "Transform vague product specs into well-structured agile beads for AI agent and human collaboration using beads_rust (br)",
+  "skills": ["skills/spec-to-beads"]
+}

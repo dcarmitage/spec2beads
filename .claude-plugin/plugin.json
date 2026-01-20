@@ -10,5 +10,5 @@
   "repository": "https://github.com/dcarmitage/spec2beads",
   "license": "MIT",
   "keywords": ["spec-to-beads", "agile", "ai-agents", "product-specs", "beads", "issue-tracking"],
-  "skills": ["skills/spec-to-beads"]
+  "skills": "skills/spec-to-beads"
 }
